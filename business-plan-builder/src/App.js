@@ -42,6 +42,11 @@ const BusinessPlanBuilder = () => {
     }
   };
 
+  function handleButtonClick(type) {
+    alert(type);
+   
+  }
+
   return (
     <div style={{ maxWidth: '400px', margin: '20px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
       <h1 style={{ textAlign: 'center' }}>Business Plan Builder</h1>
@@ -66,11 +71,11 @@ const BusinessPlanBuilder = () => {
             </p>
           ))}
           <div>
-            <button onClick={() => alert(`Price: ${businessPlan.price}`)}>Price</button>
-            <button onClick={() => alert(`Features: ${businessPlan.features}`)}>Features</button>
-            <button onClick={() => alert(`Threats: ${businessPlan.threats}`)}>Threats</button>
-            <button onClick={() => alert(`Distributions: ${businessPlan.distributions}`)}>Distributions</button>
-            <button onClick={() => alert(`Target Audience: ${businessPlan.targetAudience}`)}>Target Audience</button>
+          <button onClick={() => handleButtonClick('price')}>Price</button>
+          <button onClick={() => handleButtonClick('features')}>Features</button>
+          <button onClick={() => handleButtonClick('threats')}>Threats</button>
+          <button onClick={() => handleButtonClick('distributions')}>Distributions</button>
+          <button onClick={() => handleButtonClick('targetAudience')}>Target Audience</button>
           </div>
         </div>
       )}
@@ -79,3 +84,5 @@ const BusinessPlanBuilder = () => {
 };
 
 export default BusinessPlanBuilder;
+
+
