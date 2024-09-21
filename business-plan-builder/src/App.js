@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+// import fs from 'fs'; // Importing the fs module
+
+// const GoogleGenerativeAI = require('path-to-google-generative-ai'); // Importing GoogleGenerativeAI
 
 const BusinessPlanBuilder = () => {
   const [step, setStep] = useState(0);
   const [businessPlan, setBusinessPlan] = useState({
-    // companyName: '',
-    // mission: '',
     productService: '',
-    // targetMarket: '',
     description: '',
     price: '',
     features: '',
@@ -15,37 +15,79 @@ const BusinessPlanBuilder = () => {
     targetAudience: ''
   });
   const [currentInput, setCurrentInput] = useState('');
+  const [appendedText, setAppendedText] = useState('');
 
-  // Each description
   const steps = [
-    // { key: 'companyName', label: 'Company Name' },
-    // { key: 'mission', label: 'Mission Statement' },
     { key: 'productService', label: 'Product Name' },
-    // { key: 'targetMarket', label: 'Target Market' },
-    { key: 'description', label: 'Product Description' },
-    // { key: 'price', label: 'Price' },
-    // { key: 'features', label: 'Features' },
-    // { key: 'threats', label: 'Threats' },
-    // { key: 'distributions', label: 'Distributions' },
-    // { key: 'targetAudience', label: 'Target Audience' }
+    { key: 'description', label: 'Product Description' }
   ];
 
   const handleInputChange = (e) => {
     setCurrentInput(e.target.value);
   };
 
-  const handleSubmit = () => {
-    if (step < steps.length) {
-      setBusinessPlan({ ...businessPlan, [steps[step].key]: currentInput });
-      setCurrentInput('');
-      setStep(step + 1);
+  const handleNextStep = () => {
+    if (step === 0 && currentInput.trim()) { 
+      setTimeout(() => { 
+        setBusinessPlan({ ...businessPlan, [steps[step].key]: currentInput }); 
+        setCurrentInput(''); 
+        setStep(step + 1); 
+      }, 300);
+    } else if (step > 0 && currentInput.trim() !== '') { 
+      setTimeout(() => { 
+        setBusinessPlan({ ...businessPlan, [steps[step].key]: currentInput }); 
+        setCurrentInput(''); 
+        setStep(step + 1); 
+      }, 300); 
     }
   };
 
-  function handleButtonClick(type) {
-    alert(type);
-   
+  /*
+  const genResponse = async (query) => {
+    const genAI = new GoogleGenerativeAI("AIzaSyAFM4xf_--ZoURni6Avj2qyag_2jqhRf5Q");
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    function fileToGenerativePart(path, mimeType) {
+      return {
+        inlineData: {
+          data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+          mimeType,
+        },
+      };
+    }
+
+    const prompt = query;
+    const mediaPath = 'path-to-media'; // Define mediaPath
+    const imagePart = fileToGenerativePart(
+      `${mediaPath}/jetpack.jpg`,
+      "image/jpeg",
+    );
+
+    const result = await model.generateContent([prompt, imagePart]);
+    return (result.response.text());
   }
+*/
+  const handleButtonClick = (type) => {
+    let str = ''
+    switch (type) {
+      case 'price':
+        str = 'price'
+        break
+      case 'features':
+        str = 'features'
+        break
+      case 'threats':
+        str = 'threats'
+        break
+      case 'distributions':
+        str = 'distributions'
+        break
+      case 'targetAudience':
+        str = 'targetAudience'
+        break
+    }
+    setAppendedText((prevText) => prevText + str + ' and ');
+  };
 
   return (
     <div style={{ maxWidth: '400px', margin: '20px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
@@ -60,7 +102,7 @@ const BusinessPlanBuilder = () => {
             placeholder={`Enter ${steps[step].label}`}
             style={{ width: '100%', padding: '5px', marginBottom: '10px' }}
           />
-          <button onClick={handleSubmit} style={{ padding: '5px 10px' }}>Next</button>
+          <button onClick={handleNextStep} style={{ padding: '5px 10px' }}>Next</button>
         </div>
       ) : (
         <div>
@@ -71,11 +113,17 @@ const BusinessPlanBuilder = () => {
             </p>
           ))}
           <div>
-          <button onClick={() => handleButtonClick('price')}>Price</button>
-          <button onClick={() => handleButtonClick('features')}>Features</button>
-          <button onClick={() => handleButtonClick('threats')}>Threats</button>
-          <button onClick={() => handleButtonClick('distributions')}>Distributions</button>
-          <button onClick={() => handleButtonClick('targetAudience')}>Target Audience</button>
+            <button onClick={() => handleButtonClick('price')}>Price</button>
+            <button onClick={() => handleButtonClick('features')}>Features</button>
+            <button onClick={() => handleButtonClick('threats')}>Threats</button>
+            <button onClick={() => handleButtonClick('distributions')}>Distributions</button>
+            <button onClick={() => handleButtonClick('targetAudience')}>Target Audience</button>
+          </div>
+          <div id="prompt-params">
+            <textarea
+              value={appendedText}
+              style={{ width: '100%', height: '100px', marginTop: '10px' }}
+            />
           </div>
         </div>
       )}
@@ -84,5 +132,3 @@ const BusinessPlanBuilder = () => {
 };
 
 export default BusinessPlanBuilder;
-
-
