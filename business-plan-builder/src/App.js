@@ -1,62 +1,105 @@
 import React, { useState } from 'react';
+import './BusinessPlanBuilder.css';
+import BusinessPlanContainer from './components/BusinessPlanContainer';
+import BusinessPlanAI from './components/BusinessPlanAI';
 
 const BusinessPlanBuilder = () => {
   const [step, setStep] = useState(0);
   const [businessPlan, setBusinessPlan] = useState({
-    companyName: '',
-    mission: '',
-    productService: '',
-    targetMarket: '',
-    strategy: ''
+    idea: '',
+    description: '',
+    targetAudience: '',
+    price: '',
+    features: '',
+    niche: '',
+    distChannel: '',
   });
-  const [currentInput, setCurrentInput] = useState('');
+  const [currentInputs, setCurrentInputs] = useState({ idea: '', description: '', currentStepValue: '' });
+  const [isVisible, setIsVisible] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false); // Manage state for AI generation
 
-
-  // Each description
+  // Steps of the business plan form
   const steps = [
-    { key: 'companyName', label: 'Company Name' },
-    { key: 'mission', label: 'Mission Statement' },
-    { key: 'productService', label: 'Product/Service Description' },
-    { key: 'targetMarket', label: 'Target Market' },
-    { key: 'strategy', label: 'Business Strategy' }
+    { key: 'idea', label: 'What is your business idea?' },
+    { key: 'description', label: 'Provide a short description of your business idea' },
+    { key: 'targetAudience', label: 'Who is your target audience?' },
+    { key: 'price', label: 'What is your preferred pricing on the products?' },
+    { key: 'features', label: 'Features/Benefits?' },
+    { key: 'niche', label: 'Niche qualities?' },
+    { key: 'distChannel', label: 'Your distribution channel?' },
   ];
 
+  // Handles input change for fields
   const handleInputChange = (e) => {
-    setCurrentInput(e.target.value);
+    const { name, value } = e.target;
+    setCurrentInputs((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    if (step < steps.length) {
-      setBusinessPlan({ ...businessPlan, [steps[step].key]: currentInput });
-      setCurrentInput('');
-      setStep(step + 1);
+  // Handles step transition when Enter key is pressed
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleNextStep();
+    }
+  };
+
+  // Handles step transition when "Continue" button is pressed
+  const handleNextStep = () => {
+    console.log('Current step:', step); // Debugging: Check current step
+    console.log('Current Inputs:', currentInputs); // Debugging: Check current inputs
+
+    if (step === 0 && currentInputs.idea.trim() && currentInputs.description.trim()) {
+      // If both idea and description are filled in
+      setIsVisible(false);
+      setTimeout(() => {
+        setBusinessPlan({
+          ...businessPlan,
+          idea: currentInputs.idea,
+          description: currentInputs.description,
+        });
+        setCurrentInputs({ idea: '', description: '', currentStepValue: '' });
+        setStep(step + 1); // Move to next step
+        setIsVisible(true);
+      }, 300);
+    } else if (step > 0 && step < steps.length - 1 && currentInputs.currentStepValue.trim() !== '') {
+      // For other steps, fill in values based on the key
+      setIsVisible(false);
+      setTimeout(() => {
+        setBusinessPlan({
+          ...businessPlan,
+          [steps[step].key]: currentInputs.currentStepValue,
+        });
+        setCurrentInputs({ ...currentInputs, currentStepValue: '' });
+        setStep(step + 1); // Move to next step
+        setIsVisible(true);
+      }, 300);
+    } else if (step === steps.length - 1 && currentInputs.currentStepValue.trim() !== '') {
+      // Final input before generating the AI plan
+      console.log('Final step reached, preparing to generate AI plan');
+      setBusinessPlan({
+        ...businessPlan,
+        [steps[step].key]: currentInputs.currentStepValue,
+      });
+      setIsGenerating(true); // Trigger AI generation
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '20px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
-      <h1 style={{ textAlign: 'center' }}>Business Plan Builder</h1>
-      {step < steps.length ? (
-        <div>
-          <h2>{steps[step].label}</h2>
-          <input
-            type="text"
-            value={currentInput}
-            onChange={handleInputChange}
-            placeholder={`Enter ${steps[step].label}`}
-            style={{ width: '100%', padding: '5px', marginBottom: '10px' }}
-          />
-          <button onClick={handleSubmit} style={{ padding: '5px 10px' }}>Next</button>
-        </div>
+    <div>
+      <h1 className="business-plan-heading">Business Plan Builder</h1>
+      {!isGenerating ? (
+        <BusinessPlanContainer
+          isVisible={isVisible}
+          step={step}
+          steps={steps}
+          handleInputChange={handleInputChange}
+          handleKeyPress={handleKeyPress}
+          handleNextStep={handleNextStep}
+          currentInputs={currentInputs}
+          businessPlan={businessPlan}
+        />
       ) : (
-        <div>
-          <h2>Your Business Plan</h2>
-          {steps.map((s) => (
-            <p key={s.key}>
-              <strong>{s.label}:</strong> {businessPlan[s.key]}
-            </p>
-          ))}
-        </div>
+        // Display the BusinessPlanAI component when isGenerating is true
+        <BusinessPlanAI businessPlan={businessPlan} />
       )}
     </div>
   );
