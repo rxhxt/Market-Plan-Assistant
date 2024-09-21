@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './BusinessPlanBuilder.css';
 import BusinessPlanContainer from './components/BusinessPlanContainer';
 import BusinessPlanAI from './components/BusinessPlanAI';
 
@@ -44,11 +43,7 @@ const BusinessPlanBuilder = () => {
 
   // Handles step transition when "Continue" button is pressed
   const handleNextStep = () => {
-    console.log('Current step:', step); // Debugging: Check current step
-    console.log('Current Inputs:', currentInputs); // Debugging: Check current inputs
-
     if (step === 0 && currentInputs.idea.trim() && currentInputs.description.trim()) {
-      // If both idea and description are filled in
       setIsVisible(false);
       setTimeout(() => {
         setBusinessPlan({
@@ -61,7 +56,6 @@ const BusinessPlanBuilder = () => {
         setIsVisible(true);
       }, 300);
     } else if (step > 0 && step < steps.length - 1 && currentInputs.currentStepValue.trim() !== '') {
-      // For other steps, fill in values based on the key
       setIsVisible(false);
       setTimeout(() => {
         setBusinessPlan({
@@ -73,8 +67,6 @@ const BusinessPlanBuilder = () => {
         setIsVisible(true);
       }, 300);
     } else if (step === steps.length - 1 && currentInputs.currentStepValue.trim() !== '') {
-      // Final input before generating the AI plan
-      console.log('Final step reached, preparing to generate AI plan');
       setBusinessPlan({
         ...businessPlan,
         [steps[step].key]: currentInputs.currentStepValue,
@@ -83,9 +75,18 @@ const BusinessPlanBuilder = () => {
     }
   };
 
+  // Function to reset the form to the first step
+  const handleGoToFirstPage = () => {
+    setStep(0);
+    setIsGenerating(false); // Hide AI plan generation if visible
+    setCurrentInputs({ idea: '', description: '', currentStepValue: '' });
+  };
+
   return (
     <div>
-      <h1 className="business-plan-heading">Business Plan Builder</h1>
+      <h1 className="business-plan-heading" onClick={handleGoToFirstPage} style={{ cursor: 'pointer' }}>
+        Business Plan Builder
+      </h1>
       {!isGenerating ? (
         <BusinessPlanContainer
           isVisible={isVisible}
@@ -98,7 +99,6 @@ const BusinessPlanBuilder = () => {
           businessPlan={businessPlan}
         />
       ) : (
-        // Display the BusinessPlanAI component when isGenerating is true
         <BusinessPlanAI businessPlan={businessPlan} />
       )}
     </div>

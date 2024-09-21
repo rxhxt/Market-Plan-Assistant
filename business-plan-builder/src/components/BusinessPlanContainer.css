@@ -44,17 +44,24 @@
   .business-plan-button {
     font-size: 2vw;
     padding: 2vh 4vw;
-    background-color: #007bff;
+    background-color: #121416; /* Initial background color */
     color: white;
     border: none;
     border-radius: 1vw;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    cursor: pointer; /* Ensures the button appears clickable */
+    transition: background-color 0.3s ease, transform 0.1s ease; /* Smooth transitions */
     margin-top: 2vh;
+    outline: none; /* Remove default outline on focus */
   }
   
   .business-plan-button:hover {
-    background-color: #0056b3;
+    background-color: #383e45; /* Change color on hover */
+    transform: translateY(-2px); /* Adds a slight lift effect on hover */
+  }
+  
+  .business-plan-button:active {
+    background-color: #003d80; /* Darker color on click */
+    transform: scale(0.98); /* Slightly reduce size on click */
   }
   
   .business-plan-results-container {

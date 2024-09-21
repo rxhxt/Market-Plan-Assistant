@@ -19,7 +19,8 @@ const BusinessPlanAI = ({ businessPlan }) => {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
-          Generate a detailed business plan based on the following information:
+          You are a market analyst who is tasked with creating a detailed marketing plan for a startup preparing their business plan. The marketing plan should be based on the product details provided below:
+
 
           Business Idea: ${businessPlan.idea}
           Description: ${businessPlan.description}
@@ -31,15 +32,43 @@ const BusinessPlanAI = ({ businessPlan }) => {
 
           Please provide a comprehensive business plan that includes the following sections:
 
-          1. Executive Summary
-          2. Company Description
-          3. Market Analysis
-          4. Products/Services
-          5. Marketing and Sales Plan
-          6. Operations Plan
-          7. Financial Projections
-          8. Management Team
-          9. Appendix
+         . Market Research
+
+	•	Provide a detailed analysis of the current market for the product. Include recent trends, customer behaviors, and potential growth opportunities within the industry.
+
+2. Niche
+
+	•	Identify the product’s niche and explain how it differentiates from other offerings. Describe why this niche is important and how it aligns with consumer needs or demands.
+
+3. Threat Assessment
+
+	•	Analyze the threats that the startup may face in the market, such as economic downturns, technological disruptions, legal barriers, or competitor actions.
+
+4. Distribution Channel
+
+	•	Suggest the most effective distribution channels for the product. Discuss online and offline distribution strategies, partnerships, or innovative channels that could maximize reach and minimize costs.
+
+5. Target Audience
+
+	•	Define the target audience in detail, including demographic data, buying behavior, and preferences. Recommend ways to engage this audience through tailored marketing and advertising strategies.
+
+6. Competitors
+
+	•	Identify key competitors in the market. Compare their strengths and weaknesses, pricing models, and marketing strategies, and suggest ways to gain competitive advantage.
+
+7. SWOT Analysis
+
+	•	Perform a SWOT analysis (Strengths, Weaknesses, Opportunities, and Threats) for the startup’s product. Give actionable insights that can guide the startup’s marketing efforts.
+
+8. Data Requirements
+
+	•	If more data is required to refine the marketing plan (e.g., specific sales data, customer feedback, or geographic preferences), list the additional data that would be needed to provide further insights.
+
+9. References
+
+	•	Provide references to relevant case studies, market research reports, or articles that support the analysis provided in each section.
+
+
 
           For each section, use the provided information to create specific, tailored content. If any information is missing or unclear, make reasonable assumptions based on the given details.
         `;
@@ -64,33 +93,43 @@ const BusinessPlanAI = ({ businessPlan }) => {
       // Remove all asterisks from the beginning and end of the line
       line = line.replace(/^\*+|\*+$/g, '');
 
+      // Function to handle bold text
+      const formatBoldText = (text) => {
+        return text.split(/(\*\*.*?\*\*)/).map((part, i) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={i}>{part.slice(2, -2)}</strong>;
+          }
+          return part;
+        });
+      };
+
       // Check if the line starts with ##
       if (line.startsWith('##')) {
         // Remove ## and treat as main header
-        return <h1 key={index} className="business-plan-main-header">{line.replace(/^##\s*/, '')}</h1>;
+        return <h1 key={index} className="business-plan-main-header">{formatBoldText(line.replace(/^##\s*/, ''))}</h1>;
       }
 
       // Check if the line includes both number and asterisks
       if (/^\d+.*\*.*\*/.test(line)) {
         // Remove asterisks and treat as extra large header
-        return <h1 key={index} className="business-plan-extra-large-header">{line.replace(/\*/g, '')}</h1>;
+        return <h1 key={index} className="business-plan-extra-large-header">{formatBoldText(line.replace(/\*/g, ''))}</h1>;
       }
 
       // Check if the line is a numbered main section (e.g., "1. Executive Summary")
       if (/^\d+\.\s+[A-Z]/.test(line)) {
-        return <h2 key={index} className="business-plan-section-header">{line}</h2>;
+        return <h2 key={index} className="business-plan-section-header">{formatBoldText(line)}</h2>;
       }
 
       // Check if the line is a subsection header (e.g., "Target Market:")
       if (/^[A-Z][a-z]+(\s+[A-Z][a-z]+)*:$/.test(line)) {
-        return <h3 key={index} className="business-plan-subsection-header">{line}</h3>;
+        return <h3 key={index} className="business-plan-subsection-header">{formatBoldText(line)}</h3>;
       }
 
       // For other lines
       if (line.trim() === '') {
         return <br key={index} />;
       } else {
-        return <p key={index} className="business-plan-paragraph">{line}</p>;
+        return <p key={index} className="business-plan-paragraph">{formatBoldText(line)}</p>;
       }
     });
   };
