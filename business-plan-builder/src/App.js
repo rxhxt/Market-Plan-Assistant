@@ -3,22 +3,31 @@ import React, { useState } from 'react';
 const BusinessPlanBuilder = () => {
   const [step, setStep] = useState(0);
   const [businessPlan, setBusinessPlan] = useState({
-    companyName: '',
-    mission: '',
+    // companyName: '',
+    // mission: '',
     productService: '',
-    targetMarket: '',
-    strategy: ''
+    // targetMarket: '',
+    description: '',
+    price: '',
+    features: '',
+    threats: '',
+    distributions: '',
+    targetAudience: ''
   });
   const [currentInput, setCurrentInput] = useState('');
 
-
   // Each description
   const steps = [
-    { key: 'companyName', label: 'Company Name' },
-    { key: 'mission', label: 'Mission Statement' },
-    { key: 'productService', label: 'Product/Service Description' },
-    { key: 'targetMarket', label: 'Target Market' },
-    { key: 'strategy', label: 'Business Strategy' }
+    // { key: 'companyName', label: 'Company Name' },
+    // { key: 'mission', label: 'Mission Statement' },
+    { key: 'productService', label: 'Product Name' },
+    // { key: 'targetMarket', label: 'Target Market' },
+    { key: 'description', label: 'Product Description' },
+    // { key: 'price', label: 'Price' },
+    // { key: 'features', label: 'Features' },
+    // { key: 'threats', label: 'Threats' },
+    // { key: 'distributions', label: 'Distributions' },
+    // { key: 'targetAudience', label: 'Target Audience' }
   ];
 
   const handleInputChange = (e) => {
@@ -56,6 +65,13 @@ const BusinessPlanBuilder = () => {
               <strong>{s.label}:</strong> {businessPlan[s.key]}
             </p>
           ))}
+          <div>
+            <button onClick={() => alert(`Price: ${businessPlan.price}`)}>Price</button>
+            <button onClick={() => alert(`Features: ${businessPlan.features}`)}>Features</button>
+            <button onClick={() => alert(`Threats: ${businessPlan.threats}`)}>Threats</button>
+            <button onClick={() => alert(`Distributions: ${businessPlan.distributions}`)}>Distributions</button>
+            <button onClick={() => alert(`Target Audience: ${businessPlan.targetAudience}`)}>Target Audience</button>
+          </div>
         </div>
       )}
     </div>
